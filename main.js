@@ -3,6 +3,7 @@ var mainState = {
     preload: function() {
         game.load.image('bird', 'assets/bird.png');
         game.load.image('pipe', 'assets/pipe.png');
+        game.load.audio('jump', 'assets/jump.wav');
     },
 
     create: function() {
@@ -33,6 +34,9 @@ var mainState = {
         this.score = 0;
         this.labelScore = game.add.text(20, 20, "0",
             { font: "30px Arial", fill: "#ffffff" });
+        this.bird.anchor.setTo(-0.2, 0.5);
+
+        this.jumpSound = game.add.audio('jump');
     },
 
     update: function() {
@@ -40,14 +44,30 @@ var mainState = {
         // Call the 'restartGame' function
         if (this.bird.y < 0 || this.bird.y > 490)
             this.restartGame();
-        game.physics.arcade.overlap(
-            this.bird, this.pipes, this.restartGame, null, this)
+        game.physics.arcade.overlap(this.bird, this.pipes, this.hitPipe, null, this);
+        if (this.bird.angle < 20)
+            this.bird.angle += 1;
+
 
     },
     // Make the bird jump
     jump: function() {
         // Add a vertical velocity to the bird
         this.bird.body.velocity.y = -350;
+        // Create an animation on the bird
+        var animation = game.add.tween(this.bird);
+
+        // Change the angle of the bird to -20° in 100 milliseconds
+        animation.to({angle: -20}, 100);
+
+        // And start the animation
+        animation.start();
+
+        if (this.bird.alive == false)
+            return;
+
+        this.jumpSound.play();
+
     },
     addOnePipe: function(x, y) {
         // Create a pipe at the position x and y
@@ -80,12 +100,28 @@ var mainState = {
         this.labelScore.text = this.score;
 
     },
+    hitPipe: function() {
+        // If the bird has already hit a pipe, do nothing
+        // It means the bird is already falling off the screen
+        if (this.bird.alive == false)
+            return;
+
+        // Set the alive property of the bird to false
+        this.bird.alive = false;
+
+        // Prevent new pipes from appearing
+        game.time.events.remove(this.timer);
+
+        // Go through all the pipes, and stop their movement
+        this.pipes.forEach(function(p){
+            p.body.velocity.x = 0;
+        }, this);
+    },
     // Restart the game
     restartGame: function() {
         // Start the 'main' state, which restarts the game
         game.state.start('main');
-    }
-
+    },
 };
 
 // Initialize Phaser, and create a 400px by 490px game
