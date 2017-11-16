@@ -1,14 +1,15 @@
 // Create our 'main' state that will contain the game
 var mainState = {
     preload: function() {
-        game.load.image('bird', 'assets/bird.png');
+        game.load.image('bird', 'assets/dsa.png');
         game.load.image('pipe', 'assets/pipe.png');
         game.load.audio('jump', 'assets/jump.wav');
+        game.load.image("background", "assets/bg.png");
     },
 
     create: function() {
         // Change the background color of the game to blue
-        game.stage.backgroundColor = '#71c5cf';
+        game.add.tileSprite(0, 0, 1000, 600, 'background');
 
         // Set the physics system
         game.physics.startSystem(Phaser.Physics.ARCADE);
