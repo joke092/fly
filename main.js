@@ -125,7 +125,7 @@ var State = {
     }
 };
 
-// Zainicjuj Phaser i utwórz grę o wymiarach 400 na 490 pikseli
+// Zainicjuj Phaser i utwórz grę o wymiarach 1000 na 490 pikseli
 var game = new Phaser.Game(1000, 490);
 
 // dodaj State i wywołaj main
