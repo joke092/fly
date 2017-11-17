@@ -1,30 +1,30 @@
-// Create our 'main' state that will contain the game
-var mainState = {
+// tworzy naszego state ktory bedzie zawierał gre
+var State = {
     preload: function() {
-        game.load.image('bird', 'assets/dsa.png');
-        game.load.image('pipe', 'assets/pipe.png');
+        game.load.image('bird', 'assets/icons8-JavaScript-50.png');
+        game.load.image('pipe', 'assets/icons8-Source-Code.png');
         game.load.audio('jump', 'assets/jump.wav');
         game.load.image("background", "assets/bg.png");
     },
 
     create: function() {
-        // Change the background color of the game to blue
+        //dodaje tło
         game.add.tileSprite(0, 0, 1000, 600, 'background');
 
-        // Set the physics system
+        // ustawia fizyke systemu
         game.physics.startSystem(Phaser.Physics.ARCADE);
 
-        // Display the bird at the position x=100 and y=245
-        this.bird = game.add.sprite(100, 245, 'bird');
+        // wyswietla ikonke js w pozycji x=100 and y=245
+        this.bird = game.add.sprite(100, 145, 'bird');
 
-        // Add physics to the bird
-        // Needed for: movements, gravity, collisions, etc.
+        // dodaje fizyke ikonki js
+        // potrzebne dla: przemieszczania sie, grawitacji, kolizji, etc.
         game.physics.arcade.enable(this.bird);
 
-        // Add gravity to the bird to make it fall
-        this.bird.body.gravity.y = 1000;
+        // dodaje grawitacje do ptaka tworzac upadek
+        this.bird.body.gravity.y = 900;
 
-        // Call the 'jump' function when the spacekey is hit
+        // wywołanie fukcji jump po nacisniecu spacji
         var spaceKey = game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
         spaceKey.onDown.add(this.jump, this);
 
@@ -41,8 +41,8 @@ var mainState = {
     },
 
     update: function() {
-        // If the bird is out of the screen (too high or too low)
-        // Call the 'restartGame' function
+        // jesli ptak jest po za ekranem zbyt wysoko lub zbyt nisko.
+        // wywołaj funkcje 'restartGame'.
         if (this.bird.y < 0 || this.bird.y > 490)
             this.restartGame();
         game.physics.arcade.overlap(this.bird, this.pipes, this.hitPipe, null, this);
@@ -54,7 +54,7 @@ var mainState = {
     // Make the bird jump
     jump: function() {
         // Add a vertical velocity to the bird
-        this.bird.body.velocity.y = -350;
+        this.bird.body.velocity.y = -300;
         // Create an animation on the bird
         var animation = game.add.tween(this.bird);
 
@@ -90,10 +90,10 @@ var mainState = {
     addRowOfPipes: function() {
         // Randomly pick a number between 1 and 5
         // This will be the hole position
-        var hole = Math.floor(Math.random() * 5) + 1;
+        var hole = Math.floor(Math.random() * 6) + 1;
 
-        // Add the 6 pipes
-        // With one big hole at position 'hole' and 'hole + 1'
+        // dodaje 7 przeszkód
+        // zjednym duzym hole w pozycji hole i hole +1
         for (var i = 0; i < 8; i++)
             if (i != hole && i != hole + 1)
                 this.addOnePipe(400, i * 60 + 10);
@@ -102,34 +102,34 @@ var mainState = {
 
     },
     hitPipe: function() {
-        // If the bird has already hit a pipe, do nothing
-        // It means the bird is already falling off the screen
+        // jesli ptak uderzy w rure nie rób nic.
+        // oznacza to że ptak już spada z ekranu
         if (this.bird.alive == false)
-            return;
+            return null;
 
-        // Set the alive property of the bird to false
+        // ustawia wartosc przezycia ptaka na false
         this.bird.alive = false;
 
-        // Prevent new pipes from appearing
+        // zapobiega pojawienu sie nowych rur
         game.time.events.remove(this.timer);
 
-        // Go through all the pipes, and stop their movement
+        // Przejdź przez wszystkie rury i zatrzymaj ich ruch
         this.pipes.forEach(function(p){
             p.body.velocity.x = 0;
         }, this);
     },
-    // Restart the game
+    // restartuje gre
     restartGame: function() {
-        // Start the 'main' state, which restarts the game
+        // urochon' state, ktory restartuje gre
         game.state.start('main');
-    },
+    }
 };
 
-// Initialize Phaser, and create a 400px by 490px game
-var game = new Phaser.Game(400, 490);
+// Zainicjuj Phaser i utwórz grę o wymiarach 400 na 490 pikseli
+var game = new Phaser.Game(1000, 490);
 
-// Add the 'mainState' and call it 'main'
-game.state.add('main', mainState);
+// dodaj State i wywołaj main
+game.state.add('main', State);
 
-// Start the state to actually start the game
+// Uruchom state, aby rozpocząć grę
 game.state.start('main');
