@@ -11,20 +11,20 @@ var State = {
         //dodaje tło
         game.add.tileSprite(0, 0, 1000, 600, 'background');
 
-        // ustawia fizyke systemu
+        // set system physics
         game.physics.startSystem(Phaser.Physics.ARCADE);
 
-        // wyswietla ikonke js w pozycji x=100 and y=245
+        // show icon on the screen x=100 and y=245
         this.bird = game.add.sprite(100, 145, 'bird');
 
-        // dodaje fizyke ikonki js
-        // potrzebne dla: przemieszczania sie, grawitacji, kolizji, etc.
+        // add physics for icon js
+        // need for displacement gravity
         game.physics.arcade.enable(this.bird);
 
-        // dodaje grawitacje do ptaka tworzac upadek
+        // add gravity for bird
         this.bird.body.gravity.y = 900;
 
-        // wywołanie fukcji jump po nacisniecu spacji
+        // call function jump when you press space button
         var spaceKey = game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
         spaceKey.onDown.add(this.jump, this);
 
@@ -92,8 +92,7 @@ var State = {
         // This will be the hole position
         var hole = Math.floor(Math.random() * 6) + 1;
 
-        // dodaje 7 przeszkód
-        // zjednym duzym hole w pozycji hole i hole +1
+        // add seven obstacles
         for (var i = 0; i < 8; i++)
             if (i != hole && i != hole + 1)
                 this.addOnePipe(400, i * 60 + 10);
@@ -103,33 +102,33 @@ var State = {
     },
     hitPipe: function() {
         // jesli ptak uderzy w rure nie rób nic.
-        // oznacza to że ptak już spada z ekranu
+        // meaning that bird fall down the screan
         if (this.bird.alive == false)
             return null;
 
-        // ustawia wartosc przezycia ptaka na false
+        // set value life bird on true
         this.bird.alive = false;
 
-        // zapobiega pojawienu sie nowych rur
+        // stop create new pipes
         game.time.events.remove(this.timer);
 
-        // Przejdź przez wszystkie rury i zatrzymaj ich ruch
+        // go through by all pipes
         this.pipes.forEach(function(p){
             p.body.velocity.x = 0;
         }, this);
     },
-    // restartuje gre
+    // restart game
     restartGame: function() {
         // urochon' state, ktory restartuje gre
         game.state.start('main');
     }
 };
 
-// Zainicjuj Phaser i utwórz grę o wymiarach 1000 na 490 pikseli
+// create game about size 1000 na 490 pikseli
 var game = new Phaser.Game(1000, 490);
 
-// dodaj State i wywołaj main
+// add state and call main
 game.state.add('main', State);
 
-// Uruchom state, aby rozpocząć grę
+// on state that start game
 game.state.start('main');
